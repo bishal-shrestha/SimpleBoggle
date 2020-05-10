@@ -9,4 +9,8 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.4.1" />
   </ItemGroup>
 
+  <Target Name="CopyCustomContent" AfterTargets="AfterBuild">
+  <Copy SourceFiles="2of12inf.txt" DestinationFolder="$(OutDir)" />
+  </Target>
+
 </Project>

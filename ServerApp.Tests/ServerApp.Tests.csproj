@@ -17,4 +17,8 @@
     <ProjectReference Include="..\ServerApp\ServerApp.csproj" />
   </ItemGroup>
 
+  <Target Name="CopyCustomContent" AfterTargets="AfterBuild">
+  <Copy SourceFiles="2of12inf.txt" DestinationFolder="$(OutDir)" />
+  </Target>
+
 </Project>

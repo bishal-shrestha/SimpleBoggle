@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.IO;
+using System;
 
 namespace ServerApp.Models
 {
@@ -24,8 +25,9 @@ namespace ServerApp.Models
         static WordValidator()
         {
             ValidWordsList = new List<string>();
-            if(File.Exists(DictFileName))
-                ValidWordsList.AddRange(File.ReadAllLines(DictFileName));
+            string path = Path.Combine(AppContext.BaseDirectory,DictFileName);
+            if(File.Exists(path))
+                ValidWordsList.AddRange(File.ReadAllLines(path));
         }
 
         /// <summary>
