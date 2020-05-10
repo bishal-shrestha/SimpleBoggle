@@ -2,12 +2,15 @@
 <style>
   input.ng-dirty.ng-invalid { border: 2px solid #ff0000 }
   input.ng-dirty.ng-valid { border: 2px solid #6bc502 }
+  .table-responsive {
+    max-height:500px;
+}
   </style>
 
 <div class="container m-3">
   <div class="row">
 
-    <div class="col-9">
+    <div class="col-6">
       <table class="table table-sm table-bordered">
         <tr *ngFor="let item of getCellArray(0);let i = index">
 
@@ -20,7 +23,7 @@
         <div class="form-group">
           <label> Submit Word</label>
           <div>
-          <input name="inputWord" class="form-control-sm" [(ngModel)]="submittedWord"
+          <input name="inputWord" class="form-control-sm text-uppercase" [(ngModel)]="submittedWord"
             #name="ngModel"
             required
             minlength="3"
@@ -45,13 +48,19 @@
             </li>
           </ul>
           <ul class="text-danger list-unstyled" >
-            <li *ngIf="!repo.wordVerified && !editing">
-              Word not valid
+            <li *ngIf="!repo.wordVerified">
+              {{lastSubmittedWord}} is not valid
             </li>
           </ul>
         </div>
         </div>
       </form>
+      <div>
+      Board can be automatically solved after time runs out
+      </div>
+      <button class="btn btn-primary m-2" (click)="solveBoard()" [disabled]="!timeRunOut" [class.btn-secondary]="!timeRunOut">
+        Solve
+      </button>
     </div>
 
     <div class="col-3">
@@ -61,17 +70,19 @@
       <div class="font-weight-bold text-danger" *ngIf="timeLeft===0">
         Time is up !!!
       </div>
-      <table class="table table-bordered table-sm">
+      <table class="table table-bordered table-sm table-striped">
         <thead>
           <tr>
             <td>Word</td>
             <td>Score</td>
           </tr>
         </thead>
+        <tbody>
         <tr *ngFor="let item of getVerifiedWords()">
           <td>{{item[0]}}</td>
           <td>{{item[1]}}</td>
         </tr>
+      </tbody>
       </table>
 
       <table class="table table-borderless table-sm">
@@ -81,6 +92,25 @@
         </tr>
       </table>
     </div>
+    <div class="col-3 table-responsive" [class.invisible]="!isBoardSolved() || !timeRunOut" >
+      All Possible words
+      <table class="table table-bordered table-striped">
+        <thead>
+          <tr>
+            <td>Word</td>
+            <td>Score</td>
+          </tr>
+        </thead>
+        <tbody>
+        <tr *ngFor="let item of getSolvedWords()">
+          <td>{{item[0]}}</td>
+          <td>{{item[1]}}</td>
+        </tr>
+        </tbody>
+      </table>
+    </div>
+
+
   </div>
 </div>
 

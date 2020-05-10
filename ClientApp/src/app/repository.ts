@@ -4,7 +4,8 @@ import { Board } from './board.model';
 import { UserWord } from './userWord.model';
 
 const boardUrl = "/api/board";
-const submittedWordUrl = "/api/word"
+const submittedWordUrl = "/api/word";
+const solverUrl = "/api/solver";
 
 @Injectable()
 export class Repository {
@@ -20,8 +21,10 @@ export class Repository {
                   []
                ];
 
-  wordVerified:boolean=undefined;
+  wordVerified:boolean=true;
+  isBoardSolved:boolean = false;
   verifiedWordsMap:Map<string,number>= new Map();
+  solvedWordsMap:Map<string,number> = new Map();
 
   constructor(private http:HttpClient){
     this.getBoard();
@@ -50,7 +53,6 @@ export class Repository {
     let wordData = new UserWord();
     wordData = {generatedBoard:boardArray, wordValue:submittedWord};
 
-    this.wordVerified=undefined;
     this.http.post<boolean>(submittedWordUrl,wordData).subscribe(
       result => {
         this.wordVerified=result;
@@ -62,5 +64,22 @@ export class Repository {
       }
     );
     console.log(`Sent POST request at:${submittedWordUrl}`);
+  }
+
+  solveBoard(boardArray:string[]){
+    let board = new Board();
+    board = {generatedBoard:boardArray};
+
+    this.http.post<string[]>(`${solverUrl}`,board).subscribe(wordList => {
+      this.isBoardSolved = true;
+      for(let i=0;i<wordList.length;i++)
+      {
+        let word= wordList[i];
+      if(!this.solvedWordsMap.has(word))
+      this.solvedWordsMap.set(word,word.length);
+      }
+    }
+    );
+    console.log(`Sent POST request at:${solverUrl}`);
   }
 }

@@ -21,13 +21,16 @@ namespace ServerApp.Models
         /// List of valid words
         /// </summary>
         /// <value></value>
-        private static List<string> ValidWordsList {get;set;}
+        public static List<string> ValidWordsList {get;private set;}
+
+        //dictionary file is loaded only once
         static WordValidator()
         {
             ValidWordsList = new List<string>();
             string path = Path.Combine(AppContext.BaseDirectory,DictFileName);
             if(File.Exists(path))
-                ValidWordsList.AddRange(File.ReadAllLines(path));
+                foreach(var word in File.ReadAllLines(path))
+                    ValidWordsList.Add(word.ToUpperInvariant());
         }
 
         /// <summary>

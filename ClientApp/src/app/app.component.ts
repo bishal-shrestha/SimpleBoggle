@@ -11,19 +11,15 @@ import { timer } from 'rxjs';
 })
 
 export class AppComponent {
-  //verified:boolean=false;
 
   submittedWord:string;
+  lastSubmittedWord:string;
   formSubmitted:boolean=false;
 
   timerSource = timer(0, 1000);
-  duration:number = 60 * 3;   //3 min
+  duration:number = 60;
   timeLeft:number = 0;
   timeRunOut:boolean =false;
-
-  //totalScore:number=0;
-  editing:boolean=true;
-
 
   constructor(public repo:Repository){
     let subscribe = this.timerSource.subscribe(val => {
@@ -45,6 +41,10 @@ export class AppComponent {
     return Array.from(this.repo.verifiedWordsMap);
   }
 
+  getSolvedWords(){
+    return Array.from(this.repo.solvedWordsMap);
+  }
+
   getCellArray(i:number){
     return this.repo.cellArrary[i];
   }
@@ -63,12 +63,14 @@ export class AppComponent {
   }
 
   setEditing(){
-    this.editing = true;
+    this.lastSubmittedWord ="";
+    this.repo.wordVerified = true;
   }
 
   submitForm(form: NgForm) {
     this.formSubmitted = true;
-    this.editing = false;
+    this.submittedWord = this.submittedWord.toUpperCase();
+    this.lastSubmittedWord = this.submittedWord;
     if (form.valid) {
         console.log(`submitting:${this.submittedWord}`);
         this.repo.checkWord(this.repo.boardArray,this.submittedWord);
@@ -76,5 +78,13 @@ export class AppComponent {
         form.reset();
         this.formSubmitted = false;
     }
+  }
+
+  solveBoard(){
+    this.repo.solveBoard(this.repo.boardArray);
+  }
+
+  isBoardSolved(){
+    return this.repo.isBoardSolved;
   }
 }
