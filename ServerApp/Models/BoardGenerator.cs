@@ -4,10 +4,12 @@ using System.Collections.Generic;
 
 namespace ServerApp.Models
 {
-
+    /// <summary>
+    /// Generates board with randomized value of each dice
+    /// </summary>
     public class BoardGenerator
     {
-        //dice configuration taken from
+        //configuration of each individual dice as explained in link
         //https://boardgames.stackexchange.com/questions/29264/boggle-what-is-the-dice-configuration-for-boggle-in-various-languages
         private List<string> diceConfig = new List<string>{
             "RIFOBX", //0
@@ -29,23 +31,22 @@ namespace ServerApp.Models
         };
         public BoardGenerator()
         {
-
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <returns></returns>
         public string[] GenerateBoard()
         {
             Random random = new Random();
             List<string> newBoard = new List<string>();
             diceConfig.ForEach(
-                d=>newBoard.Add(d.Substring(random.Next(5),1))
+                d=>newBoard.Add(
+                    d.Substring(random.Next(5),1)   // get a random face from 6 faces for each dice
+                )
                 );
             return newBoard.ToArray();
         }
-
-        public void ValidWords()
-        {
-
-        }
-
     }
 }

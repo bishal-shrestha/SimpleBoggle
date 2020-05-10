@@ -1,13 +1,91 @@
 <!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-  <h1>
-    Welcome to {{ title }}!
-  </h1>
+<style>
+  input.ng-dirty.ng-invalid { border: 2px solid #ff0000 }
+  input.ng-dirty.ng-valid { border: 2px solid #6bc502 }
+  </style>
+
+<div class="container m-3">
+  <div class="row">
+
+    <div class="col-9">
+      <table class="table table-sm table-bordered">
+        <tr *ngFor="let item of getCellArray(0);let i = index">
+
+          <td *ngFor="let element of getCellArray(1);let j = index">
+            {{getCellElementValue(i,j)}}
+          </td>
+        </tr>
+      </table>
+      <form novalidate #form="ngForm" (ngSubmit)="submitForm(form)">
+        <div class="form-group">
+          <label> Submit Word</label>
+          <div>
+          <input name="inputWord" class="form-control-sm" [(ngModel)]="submittedWord"
+            #name="ngModel"
+            required
+            minlength="3"
+            pattern="^[A-Za-z]+$"
+            [disabled]="timeRunOut"
+            (keydown)="setEditing()" />
+          <button class="btn btn-primary m-2" type="submit" [disabled]="name.invalid ||timeRunOut"
+            [class.btn-secondary]="name.invalid ||timeRunOut">
+            Submit
+          </button>
+
+          <ul class="text-danger list-unstyled" *ngIf="name.dirty && name.invalid">
+            <li *ngIf="name.errors.required">
+            You must enter a Word
+            </li>
+            <li *ngIf="name.errors.pattern">
+            Words can only contain letters
+            </li>
+            <li *ngIf="name.errors.minlength">
+            Words must be at least
+            {{name.errors.minlength.requiredLength}} characters
+            </li>
+          </ul>
+          <ul class="text-danger list-unstyled" >
+            <li *ngIf="!repo.wordVerified && !editing">
+              Word not valid
+            </li>
+          </ul>
+        </div>
+        </div>
+      </form>
+    </div>
+
+    <div class="col-3">
+      <div class="font-weight-bold" *ngIf="timeLeft>0">
+        {{timeLeft}} seconds left !!!
+      </div>
+      <div class="font-weight-bold text-danger" *ngIf="timeLeft===0">
+        Time is up !!!
+      </div>
+      <table class="table table-bordered table-sm">
+        <thead>
+          <tr>
+            <td>Word</td>
+            <td>Score</td>
+          </tr>
+        </thead>
+        <tr *ngFor="let item of getVerifiedWords()">
+          <td>{{item[0]}}</td>
+          <td>{{item[1]}}</td>
+        </tr>
+      </table>
+
+      <table class="table table-borderless table-sm">
+        <tr class="text-center font-weight-bold">
+          <td>Total:</td>
+          <td>{{getTotalScore()}}</td>
+        </tr>
+      </table>
+    </div>
+  </div>
 </div>
 
-<div>
-  Board:
-{{ getBoard()}}
-</div>
+
+
+
 
 <router-outlet></router-outlet>
